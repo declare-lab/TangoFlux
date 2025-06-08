@@ -158,6 +158,20 @@ def parse_args():
         help="Whether to continue training from a model weight",
     )
 
+    parser.add_argument(
+        "--load_from_hf",
+        type=bool,
+        default=False,
+        help="Whether to Finetune a HuggingFace checkpoint",
+    )
+
+    parser.add_argument(
+        "--hf_repo",
+        type=str,
+        default="declare-lab/TangoFlux",
+        help="HuggingFace repo to finetune",
+    )
+
     args = parser.parse_args()
 
     return args
@@ -331,6 +345,14 @@ def main():
         w1 = load_file(args.load_from_checkpoint)
         model.load_state_dict(w1, strict=False)
         logger.info("Weights loaded from{}".format(args.load_from_checkpoint))
+    elif args.load_from_hf:
+        from safetensors.torch import load_file
+        from huggingface_hub import snapshot_download
+
+        path = snapshot_download(repo_id=args.hf_repo)
+        w1 = load_file(f"{path}/tangoflux.safetensors")
+        model.load_state_dict(w1, strict=False)
+        logger.info(f"Weights loaded from {args.hf_repo}")
 
     optimizer = torch.optim.AdamW(
         optimizer_parameters,
