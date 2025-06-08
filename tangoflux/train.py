@@ -160,7 +160,7 @@ def parse_args():
 
     parser.add_argument(
         "--load_from_hf",
-        type=bool,
+        action='store_true',
         default=False,
         help="Whether to Finetune a HuggingFace checkpoint",
     )
