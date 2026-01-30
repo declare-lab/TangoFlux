@@ -286,12 +286,15 @@ class TangoFlux(nn.Module):
         timesteps=None,
         guidance_scale=3,
         duration=10,
-        seed=0,
+        seed=None,
         disable_progress=False,
         num_samples_per_prompt=1,
         callback_on_step_end=None,
     ):
         """Only tested for single inference. Haven't test for batch inference"""
+        
+        if seed is None:
+            seed = random.randint(0, 2**32 - 1)  # Generate a random integer as seed
         
         torch.manual_seed(seed)
         if torch.cuda.is_available():
